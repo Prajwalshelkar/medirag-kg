@@ -22,7 +22,7 @@
 
 | Component | Choice | Notes |
 |---|---|---|
-| Dataset | IU X-ray (via Kaggle) | Free, no credentialing, paired X-ray + report |
+
 | Image encoder | CheXzero / BiomedCLIP | Run locally via Hugging Face |
 | Text NER | scispaCy / BioClinicalBERT | Extract findings, anatomy, diagnoses |
 | Knowledge graph | Neo4j | Free/local install, Cypher queries |
@@ -37,9 +37,7 @@
 
 - [x] Architecture sketched (5-stage pipeline)
 - [x] Tech stack proposed
-- [x] Dataset finalized: IU X-ray (MIMIC-CXR dropped — requires institute supervisor reference for credentialing)
-- [x] Download script + XML report loader written (src/ingestion/)
-- [ ] Dataset actually downloaded and loader tested end-to-end
+
 - [ ] Image encoder selected and tested
 - [ ] NER / entity extraction pipeline built
 - [ ] Knowledge graph schema designed
@@ -63,4 +61,4 @@
 ## Log
 
 - **Session 1:** Defined project scope, confirmed resume/placement value, decided to build fully within this chat rather than splitting across tools (Antigravity free tier too restrictive for sustained work). Sketched 5-stage architecture and proposed initial tech stack.
-- **Session 2:** Set up git repo (medirag-kg) with folder structure, README, .gitignore, requirements.txt, and pushed to GitHub. Attempted MIMIC-CXR credentialing but dropped it (requires institute supervisor reference). Switched to IU X-ray (Kaggle, no credentialing needed). Wrote download_data.py and loader.py for ingestion.
+
