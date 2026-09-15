@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Data (datasets are large, do not commit)
+data/*
+!data/.gitkeep
+
+# Models / checkpoints
+*.pt
+*.bin
+*.ckpt
+models/
+
+# Env / secrets
+.env
+*.key
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Frontend
+node_modules/
+dist/
+build/
+
+# Neo4j local data
+neo4j-data/

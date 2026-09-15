@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+faiss-cpu
+chromadb
+neo4j
+spacy
+scispacy
+transformers
+torch
+pillow
+python-multipart
