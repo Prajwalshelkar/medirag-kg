@@ -1,5 +1,4 @@
 :root {
-  /* Surfaces */
   --bg: #07090e;
   --bg-gradient: radial-gradient(circle at 15% 10%, #111a28 0%, #07090e 65%);
   --panel: rgba(16, 22, 34, 0.75);
@@ -8,15 +7,12 @@
   --panel-border: rgba(255, 255, 255, 0.08);
   --panel-border-focus: #3b82f6;
 
-  /* Typography */
   --text-primary: #f0f4f9;
   --text-secondary: #94a3b8;
   --text-muted: #627285;
 
-  /* Clinical Accents */
   --cyan-accent: #00d2ff;
   --blue-primary: #2563eb;
-  --blue-hover: #1d4ed8;
   --accent-confirmed: #f59e0b;
   --accent-ruled-out: #10b981;
   --accent-glow: rgba(0, 210, 255, 0.15);
@@ -25,7 +21,6 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Global Reset & Overflow Guard */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -48,7 +43,7 @@ body.app-body {
   overflow-x: hidden;
 }
 
-/* Header */
+/* Nav */
 .app-nav {
   display: flex;
   justify-content: space-between;
@@ -112,7 +107,6 @@ body.app-body {
 .brand-desc {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  font-weight: 400;
 }
 
 .nav-right {
@@ -167,9 +161,7 @@ body.app-body {
   color: var(--text-primary);
 }
 
-/* ==========================================================================
-   Workspace Layout (Fixed Multi-Column Grid without Page Blowout)
-   ========================================================================== */
+/* Layout */
 .workspace-container {
   flex: 1;
   max-width: 1560px;
@@ -177,7 +169,7 @@ body.app-body {
   margin: 0 auto;
   padding: 2rem 2.5rem;
   display: grid;
-  grid-template-columns: minmax(360px, 460px) minmax(0, 1fr);
+  grid-template-columns: minmax(380px, 490px) minmax(0, 1fr);
   gap: 2rem;
   align-items: start;
 }
@@ -186,10 +178,49 @@ body.app-body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  min-width: 0; /* Prevents flex child overflow */
+  min-width: 0;
 }
 
-/* Reusable Glass Card */
+/* Tabs */
+.tabs-nav {
+  display: flex;
+  gap: 0.4rem;
+  background: rgba(16, 22, 34, 0.5);
+  padding: 0.35rem;
+  border-radius: 10px;
+  border: 1px solid var(--panel-border);
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.55rem 0.65rem;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn--active {
+  background: var(--blue-primary);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* Cards */
 .card {
   background: var(--panel);
   backdrop-filter: blur(12px);
@@ -199,7 +230,7 @@ body.app-body {
   padding: 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   min-width: 0;
-  overflow: hidden; /* Clips rogue spans */
+  overflow: hidden;
   transition: border-color 0.2s ease;
 }
 
@@ -212,7 +243,6 @@ body.app-body {
   align-items: flex-start;
   gap: 0.85rem;
   margin-bottom: 1.25rem;
-  position: relative;
 }
 
 .header-icon {
@@ -234,10 +264,6 @@ body.app-body {
   border-color: rgba(16, 185, 129, 0.25);
 }
 
-.header-titles {
-  min-width: 0;
-}
-
 .header-titles h3 {
   font-size: 1.05rem;
   font-weight: 600;
@@ -249,9 +275,6 @@ body.app-body {
   color: var(--text-secondary);
 }
 
-/* ==========================================================================
-   Query Section
-   ========================================================================== */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -263,6 +286,7 @@ body.app-body {
   border: 0;
 }
 
+/* Inputs */
 .query-input {
   width: 100%;
   background: rgba(7, 9, 14, 0.65);
@@ -270,11 +294,11 @@ body.app-body {
   border-radius: 10px;
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.6;
-  padding: 1rem 1.15rem;
+  padding: 0.9rem 1.1rem;
   resize: vertical;
-  min-height: 6.5rem;
+  min-height: 6rem;
   transition: all 0.2s ease;
 }
 
@@ -285,8 +309,35 @@ body.app-body {
   background: rgba(7, 9, 14, 0.9);
 }
 
-.query-input::placeholder {
-  color: var(--text-muted);
+.input-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.45rem;
+}
+
+.file-drop-area {
+  position: relative;
+  background: rgba(7, 9, 14, 0.4);
+  border: 1px dashed var(--panel-border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-icon {
+  font-size: 1.2rem;
+  color: var(--cyan-accent);
+}
+
+.file-input {
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  width: 100%;
 }
 
 .quick-queries {
@@ -302,7 +353,6 @@ body.app-body {
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .chip-btn {
@@ -320,7 +370,6 @@ body.app-body {
 .chip-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .action-footer {
@@ -370,9 +419,7 @@ body.app-body {
   transform: none;
 }
 
-/* ==========================================================================
-   Answer Card
-   ========================================================================== */
+/* Answer Card */
 .answer-card {
   border-color: rgba(16, 185, 129, 0.25);
   background: linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, var(--panel) 100%);
@@ -389,7 +436,6 @@ body.app-body {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-weight: 500;
 }
 
 .answer-content {
@@ -407,9 +453,7 @@ body.app-body {
   word-break: break-word;
 }
 
-/* ==========================================================================
-   Evidence Cards (Overflow Repaired)
-   ========================================================================== */
+/* Evidence Cards (Guarded & Contained) */
 .evidence-list {
   display: flex;
   flex-direction: column;
@@ -425,7 +469,6 @@ body.app-body {
   padding: 1.1rem 1.25rem;
   min-width: 0;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 .evidence-item__meta {
@@ -468,7 +511,6 @@ body.app-body {
 
 .finding-line__marker {
   font-family: var(--font-mono);
-  flex-shrink: 0;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -481,9 +523,21 @@ body.app-body {
   word-break: break-word;
 }
 
-/* ==========================================================================
-   Rich Dashboard Hub (Filled Idle State)
-   ========================================================================== */
+.recent-time {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-left: 0.6rem;
+}
+
+.empty-state-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+/* Start Page Hub */
 .dashboard-hub {
   display: flex;
   flex-direction: column;
@@ -534,7 +588,6 @@ body.app-body {
   font-size: 0.72rem;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .hub-card {
@@ -607,17 +660,6 @@ body.app-body {
   align-items: center;
 }
 
-.preset-top i {
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  transition: transform 0.2s ease;
-}
-
-.preset-item:hover .preset-top i {
-  color: var(--cyan-accent);
-  transform: translateX(3px);
-}
-
 .preset-tag {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -640,10 +682,8 @@ body.app-body {
 .preset-item p {
   font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.4;
 }
 
-/* Architecture Step Row */
 .tech-step-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -681,10 +721,8 @@ body.app-body {
 .tech-step p {
   font-size: 0.72rem;
   color: var(--text-muted);
-  line-height: 1.4;
 }
 
-/* Error Card */
 .error-card {
   display: flex;
   align-items: flex-start;
@@ -696,7 +734,6 @@ body.app-body {
 .error-icon {
   color: #ef4444;
   font-size: 1.25rem;
-  margin-top: 0.1rem;
 }
 
 .error-content h4 {
@@ -711,9 +748,7 @@ body.app-body {
   color: #f87171;
 }
 
-/* ==========================================================================
-   LIGHT MODE ADAPTATION (Fully Synced)
-   ========================================================================== */
+/* Light Theme Variables */
 body.light-mode {
   --bg: #f8fafc;
   --bg-gradient: radial-gradient(circle at 15% 10%, #ffffff 0%, #f1f5f9 65%);
@@ -756,20 +791,24 @@ body.light-mode .app-nav {
   background: rgba(255, 255, 255, 0.9);
 }
 
-body.light-mode .chip-btn {
-  background: rgba(0, 0, 0, 0.03);
+body.light-mode .tabs-nav {
+  background: #f1f5f9;
+}
+
+body.light-mode .tab-btn {
   color: #475569;
 }
 
-body.light-mode .chip-btn:hover {
-  background: rgba(0, 0, 0, 0.06);
-  color: #0f172a;
+body.light-mode .tab-btn--active {
+  background: #2563eb;
+  color: #fff;
 }
 
 body.light-mode .answer-content,
 body.light-mode .evidence-item,
 body.light-mode .preset-item,
-body.light-mode .tech-step {
+body.light-mode .tech-step,
+body.light-mode .file-drop-area {
   background: #f8fafc;
 }
 
@@ -788,12 +827,6 @@ body.light-mode .ask-button {
   border: none;
 }
 
-body.light-mode .ask-button:hover {
-  background: linear-gradient(135deg, #4f46e5, #1d4ed8);
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
-}
-
-/* Responsive adjustments */
 @media (max-width: 1200px) {
   .workspace-container {
     grid-template-columns: 1fr;

@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="app-body">
@@ -45,9 +44,24 @@
 
   <main class="workspace-container">
     
-    <!-- Left Column -->
+    <!-- Left Interaction Column -->
     <section class="column query-column">
-      <div class="card query-card">
+      
+      <!-- Modernized Navigation Tabs -->
+      <nav class="tabs-nav">
+        <button class="tab-btn tab-btn--active" data-tab="ask">
+          <i class="fa-solid fa-magnifying-glass"></i> Ask Reports
+        </button>
+        <button class="tab-btn" data-tab="upload">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Study New Report
+        </button>
+        <button class="tab-btn" data-tab="recent">
+          <i class="fa-solid fa-clock-rotate-left"></i> Recent Studies
+        </button>
+      </nav>
+
+      <!-- TAB 1: Query Search -->
+      <div id="tab-ask" class="card query-card tab-content">
         <div class="card-header">
           <div class="header-icon"><i class="fa-solid fa-stethoscope"></i></div>
           <div class="header-titles">
@@ -75,16 +89,62 @@
         <div class="action-footer">
           <span class="backend-tag"><i class="fa-solid fa-microchip"></i> Groq + PubMedBERT</span>
           <button id="ask-btn" class="ask-button">
-            <span class="ask-button__text">
-              <i class="fa-solid fa-bolt"></i> Run Hybrid Analysis
-            </span>
-            <span class="ask-button__spinner" hidden>
-              <i class="fa-solid fa-circle-notch fa-spin"></i> Synthesizing...
-            </span>
+            <span class="ask-button__text"><i class="fa-solid fa-bolt"></i> Run Hybrid Analysis</span>
+            <span class="ask-button__spinner" hidden><i class="fa-solid fa-circle-notch fa-spin"></i> Synthesizing...</span>
           </button>
         </div>
       </div>
 
+      <!-- TAB 2: Upload Multimodal Report -->
+      <div id="tab-upload" class="card query-card tab-content" hidden>
+        <div class="card-header">
+          <div class="header-icon"><i class="fa-solid fa-file-medical"></i></div>
+          <div class="header-titles">
+            <h3>Multimodal Ingestion</h3>
+            <p>Attach a chest radiograph and report findings for KG extraction</p>
+          </div>
+        </div>
+
+        <div class="upload-group">
+          <label class="input-label" for="upload-image">Chest X-Ray Radiograph</label>
+          <div class="file-drop-area">
+            <i class="fa-solid fa-image file-icon"></i>
+            <input type="file" id="upload-image" accept="image/*" class="file-input" />
+          </div>
+
+          <label class="input-label" for="upload-text" style="margin-top: 1rem;">Impression / Clinical Notes</label>
+          <textarea
+            id="upload-text"
+            class="query-input"
+            rows="4"
+            placeholder="Paste raw findings, impressions, or clinical report text here..."
+          ></textarea>
+        </div>
+
+        <div class="action-footer">
+          <span class="backend-tag"><i class="fa-solid fa-network-wired"></i> Graph Ingestion</span>
+          <button id="upload-btn" class="ask-button">
+            <span class="ask-button__text"><i class="fa-solid fa-wand-magic-sparkles"></i> Study Report</span>
+            <span class="ask-button__spinner" hidden><i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 3: Recent Studies -->
+      <div id="tab-recent" class="card query-card tab-content" hidden>
+        <div class="card-header">
+          <div class="header-icon"><i class="fa-solid fa-history"></i></div>
+          <div class="header-titles">
+            <h3>Session History</h3>
+            <p>Reports and radiographs processed during this session</p>
+          </div>
+        </div>
+        <div id="recent-list" class="evidence-list">
+          <p class="empty-state-text">No reports studied yet this session.</p>
+        </div>
+      </div>
+
+      <!-- Execution Error Notice -->
       <section id="error-section" class="card error-card" hidden>
         <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <div class="error-content">
@@ -93,6 +153,7 @@
         </div>
       </section>
 
+      <!-- Synthesized Assessment Box -->
       <section id="answer-section" class="card answer-card" hidden>
         <div class="card-header">
           <div class="header-icon success-glow"><i class="fa-solid fa-brain"></i></div>
@@ -106,12 +167,13 @@
           <div id="answer-text" class="answer-text"></div>
         </div>
       </section>
+
     </section>
 
-    <!-- Right Column -->
+    <!-- Right Evidence & Telemetry Column -->
     <aside class="column evidence-column">
       
-      <!-- Evidence Results (Hidden initially) -->
+      <!-- Evidence Results Section -->
       <section id="evidence-section" class="card evidence-card" hidden>
         <div class="card-header">
           <div class="header-icon"><i class="fa-solid fa-diagram-project"></i></div>
@@ -123,10 +185,9 @@
         <div id="evidence-list" class="evidence-list"></div>
       </section>
 
-      <!-- Rich Dashboard Start Page (Visible before querying) -->
+      <!-- Start Page Cockpit Hub -->
       <div id="idle-placeholder" class="dashboard-hub">
         
-        <!-- Corpus Analytics Strip -->
         <div class="hub-metrics-row">
           <div class="metric-card">
             <div class="metric-icon"><i class="fa-solid fa-folder-tree"></i></div>
@@ -151,7 +212,6 @@
           </div>
         </div>
 
-        <!-- Featured Case Presets -->
         <div class="card hub-card">
           <div class="hub-card-header">
             <h4><i class="fa-solid fa-flask"></i> Clinical Inquiry Presets</h4>
@@ -198,7 +258,6 @@
           </div>
         </div>
 
-        <!-- Architecture Quick Info -->
         <div class="card hub-card tech-brief-card">
           <div class="hub-card-header">
             <h4><i class="fa-solid fa-layer-group"></i> Pipeline Execution Architecture</h4>
