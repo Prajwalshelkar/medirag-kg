@@ -37,8 +37,17 @@ SYSTEM_PROMPT = """You are a radiology assistant helping summarize chest X-ray \
 findings based on retrieved report context. Only state findings that are \
 explicitly present in the provided context. Clearly distinguish confirmed \
 findings from findings that were explicitly ruled out. If the context is \
-insufficient to answer, say so rather than guessing. This is for an \
-educational/portfolio project, not real clinical use."""
+insufficient to answer, say so rather than guessing.
+
+The person asking may not know clinical terminology. The FIRST time you \
+mention a clinical term (e.g. "pneumothorax", "pleural effusion", \
+"cardiomegaly", "consolidation"), add a short plain-language explanation \
+in parentheses right after it, e.g. "pleural effusion (fluid buildup \
+around the lungs)". Do not re-explain a term you've already explained \
+once in the same answer. Keep explanations short -- a few words, not a \
+full definition.
+
+This is for an educational/portfolio project, not real clinical use."""
 
 
 class GroqBackend:
@@ -49,7 +58,8 @@ class GroqBackend:
         if not api_key:
             raise EnvironmentError("GROQ_API_KEY not set in .env")
         self.client = Groq(api_key=api_key)
-        self.model = "qwen/qwen3.8-27b"
+        # Using openai/gpt-oss-20b which has higher token limits on your free tier
+        self.model = "openai/gpt-oss-20b"
 
     def generate(self, prompt: str) -> str:
         response = self.client.chat.completions.create(
@@ -59,6 +69,7 @@ class GroqBackend:
                 {"role": "user", "content": prompt},
             ],
             temperature=0.2,  # low temperature: we want grounded, not creative
+            max_tokens=400,   # explicit token ceiling to prevent OTPM 429 errors
         )
         return response.choices[0].message.content
 
@@ -120,4 +131,4 @@ if __name__ == "__main__":
     print(f"Query: {query}\n")
     answer = answer_query(query)
     print("Answer:")
-    print(answer)   
+    print(answer)
