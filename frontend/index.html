@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediRAG-KG | Clinical Intelligence Console</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="app-body">
+
+  <header class="app-nav">
+    <div class="nav-left">
+      <div class="brand-symbol">
+        <i class="fa-solid fa-dna"></i>
+      </div>
+      <div class="brand-text">
+        <div class="brand-row">
+          <h1 class="brand-title">MediRAG<span>-KG</span></h1>
+          <span class="version-tag">v1.0-kg</span>
+        </div>
+        <p class="brand-desc">Multimodal Knowledge-Graph Clinical Decision Assistant</p>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="status-indicator">
+        <span class="ping-circle"></span>
+        <span class="status-text">Pipeline Active</span>
+      </div>
+      <div class="disclaimer-badge">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Research Prototype &middot; Non-Diagnostic</span>
+      </div>
+      <button id="theme-toggle" class="theme-btn" title="Toggle Light/Dark Mode">
+        <i class="fa-solid fa-sun"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="workspace-container">
+    
+    <!-- Left Column -->
+    <section class="column query-column">
+      <div class="card query-card">
+        <div class="card-header">
+          <div class="header-icon"><i class="fa-solid fa-stethoscope"></i></div>
+          <div class="header-titles">
+            <h3>Radiological Inquiry</h3>
+            <p>Query stored patient reports with graph-grounded verification</p>
+          </div>
+        </div>
+
+        <div class="input-wrapper">
+          <label class="sr-only" for="question">Radiology Query</label>
+          <textarea
+            id="question"
+            class="query-input"
+            rows="3"
+            placeholder="e.g. Is there any evidence of pneumothorax or pleural effusion?"
+          ></textarea>
+        </div>
+
+        <div class="quick-queries">
+          <span class="quick-label">Try:</span>
+          <button type="button" class="chip-btn" onclick="setQuery(this.innerText)">Is there evidence of pneumothorax?</button>
+          <button type="button" class="chip-btn" onclick="setQuery(this.innerText)">Any cardiomegaly or pulmonary edema reported?</button>
+        </div>
+
+        <div class="action-footer">
+          <span class="backend-tag"><i class="fa-solid fa-microchip"></i> Groq + PubMedBERT</span>
+          <button id="ask-btn" class="ask-button">
+            <span class="ask-button__text">
+              <i class="fa-solid fa-bolt"></i> Run Hybrid Analysis
+            </span>
+            <span class="ask-button__spinner" hidden>
+              <i class="fa-solid fa-circle-notch fa-spin"></i> Synthesizing...
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <section id="error-section" class="card error-card" hidden>
+        <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="error-content">
+          <h4>Execution Error</h4>
+          <p id="error-text"></p>
+        </div>
+      </section>
+
+      <section id="answer-section" class="card answer-card" hidden>
+        <div class="card-header">
+          <div class="header-icon success-glow"><i class="fa-solid fa-brain"></i></div>
+          <div class="header-titles">
+            <h3>Synthesized Assessment</h3>
+            <p>Grounded LLM synthesis with negation & entity scoping</p>
+          </div>
+          <span class="verified-pill"><i class="fa-solid fa-circle-check"></i> KG-Verified</span>
+        </div>
+        <div class="answer-content">
+          <div id="answer-text" class="answer-text"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Right Column -->
+    <aside class="column evidence-column">
+      
+      <!-- Evidence Results (Hidden initially) -->
+      <section id="evidence-section" class="card evidence-card" hidden>
+        <div class="card-header">
+          <div class="header-icon"><i class="fa-solid fa-diagram-project"></i></div>
+          <div class="header-titles">
+            <h3>Retrieved Evidence</h3>
+            <p>Vector similarity + Knowledge Graph subgraphs</p>
+          </div>
+        </div>
+        <div id="evidence-list" class="evidence-list"></div>
+      </section>
+
+      <!-- Rich Dashboard Start Page (Visible before querying) -->
+      <div id="idle-placeholder" class="dashboard-hub">
+        
+        <!-- Corpus Analytics Strip -->
+        <div class="hub-metrics-row">
+          <div class="metric-card">
+            <div class="metric-icon"><i class="fa-solid fa-folder-tree"></i></div>
+            <div class="metric-details">
+              <span class="metric-val">3,800+</span>
+              <span class="metric-name">Stored Reports</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <div class="metric-details">
+              <span class="metric-val">Neo4j</span>
+              <span class="metric-name">Knowledge Graph</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon"><i class="fa-solid fa-code-compare"></i></div>
+            <div class="metric-details">
+              <span class="metric-val">NegEx</span>
+              <span class="metric-name">Scoping Engine</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Case Presets -->
+        <div class="card hub-card">
+          <div class="hub-card-header">
+            <h4><i class="fa-solid fa-flask"></i> Clinical Inquiry Presets</h4>
+            <span class="hub-card-badge">Instant Load</span>
+          </div>
+          <p class="hub-desc">Select a preset to test negation resolution across multi-report findings:</p>
+
+          <div class="preset-grid">
+            <button class="preset-item" onclick="runPreset('Are there any signs of pleural effusion or consolidation?')">
+              <div class="preset-top">
+                <span class="preset-tag effusion">Effusion Check</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+              <h5>Pleural Effusion & Consolidation</h5>
+              <p>Evaluates compound clauses with multi-entity negation detection.</p>
+            </button>
+
+            <button class="preset-item" onclick="runPreset('Is there any evidence of cardiomegaly or enlarged silhouette?')">
+              <div class="preset-top">
+                <span class="preset-tag cardio">Cardiac Evaluation</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+              <h5>Cardiomegaly & Silhouette Size</h5>
+              <p>Analyzes normal limits versus explicit borderline cardiomegaly notes.</p>
+            </button>
+
+            <button class="preset-item" onclick="runPreset('Check for pneumothorax and rib fractures across records.')">
+              <div class="preset-top">
+                <span class="preset-tag trauma">Trauma & Ribs</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+              <h5>Pneumothorax & Rib Fractures</h5>
+              <p>Tests detection for acute trauma and explicitly ruled-out pathologies.</p>
+            </button>
+
+            <button class="preset-item" onclick="runPreset('Identify any granulomatous disease, nodules, or TB traces.')">
+              <div class="preset-top">
+                <span class="preset-tag chronic">Chronic / TB</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+              <h5>Granuloma & Tuberculosis</h5>
+              <p>Retrieves specific infection histories and positive test findings.</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Architecture Quick Info -->
+        <div class="card hub-card tech-brief-card">
+          <div class="hub-card-header">
+            <h4><i class="fa-solid fa-layer-group"></i> Pipeline Execution Architecture</h4>
+          </div>
+          <div class="tech-step-row">
+            <div class="tech-step">
+              <div class="step-num">01</div>
+              <div class="step-info">
+                <h6>Dense Retrieval</h6>
+                <p>PubMedBERT 768-d vector similarity ranking</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <div class="step-num">02</div>
+              <div class="step-info">
+                <h6>Clinical NER & Negation</h6>
+                <p>scispaCy clinical entities + NegEx clause boundaries</p>
+              </div>
+            </div>
+            <div class="tech-step">
+              <div class="step-num">03</div>
+              <div class="step-info">
+                <h6>Grounded Synthesis</h6>
+                <p>Groq LPU LLM generation constrained to extracted subgraphs</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
